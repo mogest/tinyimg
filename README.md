@@ -28,27 +28,35 @@ Then add tinyimg to your project's Gemfile
 
 Load the image with the method that fits your use case:
 
-    image = Tinyimg.from_string(an_image_that_is_already_loaded)
-    image = Tinyimg.from_file("some_image.png")
-    image = Tinyimg.from_io(params[:uploaded_file])
+```ruby
+image = Tinyimg.from_string(an_image_that_is_already_loaded)
+image = Tinyimg.from_file("some_image.png")
+image = Tinyimg.from_io(params[:uploaded_file])
+```
 
 Manipulate it by using one of the resize commands:
 
-    image.resize_to_fit!(100, 100)  # image will be 100x100 maximum
-    image.resize_to_fill!(100, 100) # image will be 100x100 minimum
-    image.resize!(100, 100)         # forces image to be exactly 100x100
+```ruby
+image.resize_to_fit!(100, 100)  # image will be 100x100 maximum
+image.resize_to_fill!(100, 100) # image will be 100x100 minimum
+image.resize!(100, 100)         # forces image to be exactly 100x100
+```
 
 Then get an image back:
 
-    image.to_png                 # returns a string
-    image.to_jpeg                # returns a string
-    image.save("some_image.jpg") # file type auto-determined by extension
+```ruby
+image.to_png                 # returns a string
+image.to_jpeg                # returns a string
+image.save("some_image.jpg") # file type auto-determined by extension
+```
 
 You can ask for the image's dimensions:
 
-    image.width       # => 120
-    image.height      # => 80
-    image.dimensions  # => [120, 80]
+```ruby
+image.width       # => 120
+image.height      # => 80
+image.dimensions  # => [120, 80]
+```
 
 You can also use the non-! versions of the resize methods: `resize`, `resize_to_fit` and `resize_to_fill`.
 These create a new image in memory and return it, leaving the old image untouched.  This is useful if you want
@@ -58,16 +66,20 @@ to resize an original image to multiple sizes.  Using these methods will take mo
 
 Take an uploaded file, save the original as a JPEG, then resize to create a thumbnail and save that too:
 
-    Tinyimg
-      .from_io(params[:uploaded_file])
-      .save("#{path}/full_size.jpg")
-      .resize_to_fit!(100, 100)
-      .save("#{path}/thumbnail.jpg")
+```ruby
+Tinyimg
+  .from_io(params[:uploaded_file])
+  .save("#{path}/full_size.jpg")
+  .resize_to_fit!(100, 100)
+  .save("#{path}/thumbnail.jpg")
+```
 
 Load a file from disk, make a thumbnail, and return it as a JPEG so we can save it into our database:
 
-    data = Tinyimg.from_file(image_filename).resize_to_fit!(100, 100).to_jpeg
-    user.update!(thumbnail_image: data)
+```ruby
+data = Tinyimg.from_file(image_filename).resize_to_fit!(100, 100).to_jpeg
+user.update!(thumbnail_image: data)
+```
 
 ## Author and licence
 
