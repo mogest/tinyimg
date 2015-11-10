@@ -240,7 +240,7 @@ void Init_tinyimg()
   VALUE cTinyimg = rb_define_class("Tinyimg", rb_cObject);
   rb_define_class_under(cTinyimg, "Image", rb_cObject);
 
-  rb_define_method(cTinyimg, "resize!", resize_bang, 2);
+  rb_define_method(cTinyimg, "c_resize!", resize_bang, 2);
   rb_define_method(cTinyimg, "to_jpeg", to_jpeg, -1);
   rb_define_method(cTinyimg, "to_png", to_png, -1);
   rb_define_private_method(cTinyimg, "initialize_copy", initialize_copy, -1);
