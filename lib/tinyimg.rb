@@ -1,4 +1,4 @@
-require_relative '../ext/tinyimg/tinyimg'
+require 'tinyimg/tinyimg'
 
 class Tinyimg
   attr_reader :width, :height
@@ -21,30 +21,34 @@ class Tinyimg
     [width, height]
   end
 
-  def resize(width, height)
-    dup.resize!(width, height)
+  def resize(width:, height:)
+    dup.c_resize!(width, height)
   end
 
   # Implemented in C
-  # def resize!(width, height)
+  # def c_resize!(width, height)
   # end
 
-  def resize_to_fit(new_width, new_height)
-    dup.resize_to_fit!(new_width, new_height)
+  def resize!(width:, height:)
+    c_resize!(width, height)
   end
 
-  def resize_to_fit!(new_width, new_height)
-    resize_to_fit_or_fill!(new_width, new_height) do |old_ratio, new_ratio|
+  def resize_to_fit(width:, height:)
+    dup.resize_to_fit!(width: width, height: height)
+  end
+
+  def resize_to_fit!(width:, height:)
+    resize_to_fit_or_fill!(width: width, height: height) do |old_ratio, new_ratio|
       old_ratio > new_ratio
     end
   end
 
-  def resize_to_fill(new_width, new_height)
-    dup.resize_to_fill!(new_width, new_height)
+  def resize_to_fill(width:, height:)
+    dup.resize_to_fill!(width, height)
   end
 
-  def resize_to_fill!(new_width, new_height)
-    resize_to_fit_or_fill!(new_width, new_height) do |old_ratio, new_ratio|
+  def resize_to_fill!(width:, height:)
+    resize_to_fit_or_fill!(width: width, height: height) do |old_ratio, new_ratio|
       old_ratio < new_ratio
     end
   end
@@ -88,19 +92,19 @@ class Tinyimg
     end
   end
 
-  def resize_to_fit_or_fill!(new_width, new_height)
-    old_ratio = width / height.to_f
-    new_ratio = new_width / new_height.to_f
+  def resize_to_fit_or_fill!(width:, height:)
+    old_ratio = self.width / self.height.to_f
+    new_ratio = width / height.to_f
 
     if yield(old_ratio, new_ratio)
-      resize_width = new_width
-      resize_height = (height * (new_width / width.to_f)).to_i
+      resize_width = width
+      resize_height = (self.height * (width / self.width.to_f)).to_i
     else
-      resize_width = (width * (new_height / height.to_f)).to_i
-      resize_height = new_height
+      resize_width = (self.width * (height / self.height.to_f)).to_i
+      resize_height = height
     end
 
-    resize!(resize_width, resize_height)
+    c_resize!(resize_width, resize_height)
   end
 
   def determine_type(data)

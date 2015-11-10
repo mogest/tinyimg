@@ -35,7 +35,7 @@ RSpec.describe Tinyimg do
 
   describe "#resize" do
     it "resizes the image as requested, creating a new image" do
-      result = sample.resize(100, 100)
+      result = sample.resize(width: 100, height: 100)
       expect(result).to_not eql sample
       expect(sample.dimensions).to eq [200, 153]
       expect(result.dimensions).to eq [100, 100]
@@ -44,7 +44,15 @@ RSpec.describe Tinyimg do
 
   describe "#resize!" do
     it "resizes the image as requested" do
-      result = sample.resize!(100, 100)
+      result = sample.resize!(width: 100, height: 100)
+      expect(result).to eql sample
+      expect(sample.dimensions).to eq [100, 100]
+    end
+  end
+
+  describe "#c_resize!" do
+    it "resizes the image as requested directly using the method implemented in C" do
+      result = sample.c_resize!(100, 100)
       expect(result).to eql sample
       expect(sample.dimensions).to eq [100, 100]
     end
@@ -52,24 +60,24 @@ RSpec.describe Tinyimg do
 
   describe "#resize_to_fit!" do
     it "calculates the image dimensions so it fits the width and resizes" do
-      sample.resize_to_fit!(100, 100)
+      sample.resize_to_fit!(width: 100, height: 100)
       expect(sample.dimensions).to eq [100, 76]
     end
 
     it "calculates the image dimensions so it fits the height and resizes" do
-      sample.resize_to_fit!(1000, 100)
+      sample.resize_to_fit!(width: 1000, height: 100)
       expect(sample.dimensions).to eq [130, 100]
     end
   end
 
   describe "#resize_to_fill!" do
     it "calculates the image dimensions so it fills the width and resizes" do
-      sample.resize_to_fill!(1000, 100)
+      sample.resize_to_fill!(width: 1000, height: 100)
       expect(sample.dimensions).to eq [1000, 765]
     end
 
     it "calculates the image dimensions so it fills the height and resizes" do
-      sample.resize_to_fill!(100, 100)
+      sample.resize_to_fill!(width: 100, height: 100)
       expect(sample.dimensions).to eq [130, 100]
     end
   end
