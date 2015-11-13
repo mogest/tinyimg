@@ -76,6 +76,8 @@ class Tinyimg
 
       File.write(filename, data)
     end
+
+    self
   end
 
   # Implemented in C
