@@ -21,12 +21,28 @@ class Tinyimg
     [width, height]
   end
 
-  def resize(width, height)
-    dup.resize!(width, height)
+  def resize(*args)
+    dup.resize!(*args)
+  end
+
+  def resize!(*args)
+    case args.map(&:class)
+    when [Fixnum, Fixnum]
+      resize_exact!(*args)
+    when [Hash]
+      width, height = convert_hash_to_exact_dimensions(args.first)
+      resize_exact!(width, height)
+    else
+      raise ArgumentError, "#resize and #resize! accept either (width, height) or a hash with :width and/or :height keys"
+    end
+  end
+
+  def resize_exact(width, height)
+    dup.resize_exact!(width, height)
   end
 
   # Implemented in C
-  # def resize!(width, height)
+  # def resize_exact!(width, height)
   # end
 
   def resize_to_fit(new_width, new_height)
@@ -100,7 +116,7 @@ class Tinyimg
       resize_height = new_height
     end
 
-    resize!(resize_width, resize_height)
+    resize_exact!(resize_width, resize_height)
   end
 
   def determine_type(data)
@@ -120,6 +136,26 @@ class Tinyimg
     else
       raise ArgumentError, "Cannot determine image type based on the filename"
     end
+  end
+
+  def convert_hash_to_exact_dimensions(opts)
+    if opts.empty? || !(opts.keys - [:width, :height]).empty?
+      raise ArgumentError, "expected either :width or :height or both keys"
+    end
+
+    if opts.values.any? { |v| !v.is_a?(Fixnum) }
+      raise ArgumentError, ":width and :height values must be integers"
+    end
+
+    new_width, new_height = opts[:width], opts[:height]
+
+    if new_height.nil?
+      new_height = height * new_width / width
+    elsif new_width.nil?
+      new_width = width * new_height / height
+    end
+
+    [new_width, new_height]
   end
 
   # Implemented in C

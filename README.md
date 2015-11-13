@@ -37,9 +37,11 @@ image = Tinyimg.from_io(params[:uploaded_file])
 Manipulate it by using one of the resize commands:
 
 ```ruby
+image.resize_exact!(100, 100)   # forces image to be exactly 100x100
+image.resize!(width: 100)       # width = 100 and aspect ratio maintained
+image.resize!(height: 50)       # height = 50 and aspect ratio maintained
 image.resize_to_fit!(100, 100)  # image will be 100x100 maximum
 image.resize_to_fill!(100, 100) # image will be 100x100 minimum
-image.resize!(100, 100)         # forces image to be exactly 100x100
 ```
 
 Then get an image back:
@@ -58,7 +60,7 @@ image.height      # => 80
 image.dimensions  # => [120, 80]
 ```
 
-You can also use the non-! versions of the resize methods: `resize`, `resize_to_fit` and `resize_to_fill`.
+You can also use the non-! versions of the resize methods: `resize_exact`, `resize`, `resize_to_fit` and `resize_to_fill`.
 These create a new image in memory and return it, leaving the old image untouched.  This is useful if you want
 to resize an original image to multiple sizes.  Using these methods will take more memory.
 

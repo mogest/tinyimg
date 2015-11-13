@@ -33,20 +33,80 @@ RSpec.describe Tinyimg do
     end
   end
 
-  describe "#resize" do
+  describe "#resize_exact" do
     it "resizes the image as requested, creating a new image" do
-      result = sample.resize(100, 100)
+      result = sample.resize_exact(100, 100)
       expect(result).to_not eql sample
       expect(sample.dimensions).to eq [200, 153]
       expect(result.dimensions).to eq [100, 100]
     end
   end
 
-  describe "#resize!" do
+  describe "#resize_exact!" do
     it "resizes the image as requested" do
-      result = sample.resize!(100, 100)
+      result = sample.resize_exact!(100, 100)
       expect(result).to eql sample
       expect(sample.dimensions).to eq [100, 100]
+    end
+  end
+
+  describe "#resize" do
+    it "takes an exact width and height and resizes" do
+      result = sample.resize(100, 100)
+      expect(result.dimensions).to eq [100, 100]
+    end
+
+    it "takes a width and height as a hash and resizes" do
+      result = sample.resize(width: 100, height: 100)
+      expect(result.dimensions).to eq [100, 100]
+    end
+
+    it "takes just a width and resizes, calculating the height" do
+      result = sample.resize(width: 100)
+      expect(result.dimensions).to eq [100, 76]
+    end
+
+    it "takes just a height and resizes, calculating the width" do
+      result = sample.resize(height: 100)
+      expect(result.dimensions).to eq [130, 100]
+    end
+  end
+
+  describe "#resize!" do
+    it "takes an exact width and height and resizes" do
+      result = sample.resize!(100, 100)
+      expect(sample.dimensions).to eq [100, 100]
+    end
+
+    it "takes a width and height as a hash and resizes" do
+      result = sample.resize!(width: 100, height: 100)
+      expect(sample.dimensions).to eq [100, 100]
+    end
+
+    it "takes just a width and resizes, calculating the height" do
+      result = sample.resize!(width: 100)
+      expect(sample.dimensions).to eq [100, 76]
+    end
+
+    it "takes just a height and resizes, calculating the width" do
+      result = sample.resize!(height: 100)
+      expect(sample.dimensions).to eq [130, 100]
+    end
+
+    it "raises if other keys are provided" do
+      expect { sample.resize!(something: 123) }.to raise_error(ArgumentError)
+    end
+
+    it "raises if non-integer values are provided" do
+      expect { sample.resize!(width: "123") }.to raise_error(ArgumentError)
+    end
+
+    it "raises if no keys are provided" do
+      expect { sample.resize! }.to raise_error(ArgumentError)
+    end
+
+    it "raises if only one argument is provided" do
+      expect { sample.resize!(123) }.to raise_error(ArgumentError)
     end
   end
 

@@ -203,7 +203,7 @@ VALUE to_png(int argc, VALUE *argv, VALUE self)
   return output;
 }
 
-VALUE resize_bang(VALUE self, VALUE width_value, VALUE height_value)
+VALUE resize_exact_bang(VALUE self, VALUE width_value, VALUE height_value)
 {
   gdImagePtr image_in, image_out;
   int width, height;
@@ -240,7 +240,7 @@ void Init_tinyimg()
   VALUE cTinyimg = rb_define_class("Tinyimg", rb_cObject);
   rb_define_class_under(cTinyimg, "Image", rb_cObject);
 
-  rb_define_method(cTinyimg, "resize!", resize_bang, 2);
+  rb_define_method(cTinyimg, "resize_exact!", resize_exact_bang, 2);
   rb_define_method(cTinyimg, "to_jpeg", to_jpeg, -1);
   rb_define_method(cTinyimg, "to_png", to_png, -1);
   rb_define_private_method(cTinyimg, "initialize_copy", initialize_copy, -1);
