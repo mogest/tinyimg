@@ -65,6 +65,17 @@ class Tinyimg
     end
   end
 
+  def crop(**kwargs)
+    dup.crop!(**kwargs)
+  end
+
+  def crop!(x: 0, y: 0, width: nil, height: nil)
+    width ||= self.width
+    height ||= self.height
+
+    internal_crop!(x, y, width, height)
+  end
+
   def save(filename)
     if respond_to?(:save_to_file)
       save_to_file(filename)
@@ -162,6 +173,10 @@ class Tinyimg
 
   # Implemented in C
   # def load_from_string(data, type)
+  # end
+
+  # Implemented in C
+  # def internal_crop!(x, y, width, height)
   # end
 
   # Implemented in C

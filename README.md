@@ -1,6 +1,6 @@
 # Tinyimg
 
-Load a JPEG or PNG, get its dimensions, resize it, and extract it again as either a JPEG or PNG.
+Load a JPEG or PNG, get its dimensions, crop it, resize it, and extract it again as either a JPEG or PNG.
 
 This gem can work from image data stored in memory, as well as from a file or IO stream.
 It's been coded to be as efficient as possible, so doesn't use temporary files.
@@ -34,7 +34,7 @@ image = Tinyimg.from_file("some_image.png")
 image = Tinyimg.from_io(params[:uploaded_file])
 ```
 
-Manipulate it by using one of the resize commands:
+Resize it by using one of these methods:
 
 ```ruby
 image.resize_exact!(100, 100)   # forces image to be exactly 100x100
@@ -42,6 +42,17 @@ image.resize!(width: 100)       # width = 100 and aspect ratio maintained
 image.resize!(height: 50)       # height = 50 and aspect ratio maintained
 image.resize_to_fit!(100, 100)  # image will be 100x100 maximum
 image.resize_to_fill!(100, 100) # image will be 100x100 minimum
+```
+
+Crop it using this method:
+
+```ruby
+# Crops the image from (20, 20) to (70, 70), resulting in a 50x50 image.
+image.crop!(x: 20, y: 20, width: 50, height: 50)
+
+# By default, x and y arguments are zero, and width and height arguments
+# are the width and height of the original image.
+image.crop!(width: image.height)
 ```
 
 Then get an image back:
@@ -60,13 +71,13 @@ image.height      # => 80
 image.dimensions  # => [120, 80]
 ```
 
-You can also use the non-! versions of the resize methods: `resize_exact`, `resize`, `resize_to_fit` and `resize_to_fill`.
+You can also use the non-! versions of the operation methods: `resize_exact`, `resize`, `resize_to_fit`, `resize_to_fill` and `crop`.
 These create a new image in memory and return it, leaving the old image untouched.  This is useful if you want
 to resize an original image to multiple sizes.  Using these methods will take more memory.
 
 ## Examples
 
-Take an uploaded file, save the original as a JPEG, then resize to create a thumbnail and save that too:
+Take an uploaded file that's a PNG or JPEG, save the original as a JPEG, then resize to create a thumbnail and save that too:
 
 ```ruby
 Tinyimg

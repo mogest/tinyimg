@@ -134,6 +134,31 @@ RSpec.describe Tinyimg do
     end
   end
 
+  describe "#crop" do
+    it "crops the image to the specified size and offset" do
+      result = sample.crop(x: 10, y: 20, width: 30, height: 40)
+      expect(result.dimensions).to eq [30, 40]
+    end
+  end
+
+  describe "#crop!" do
+    it "crops the image to the specified size and offset" do
+      sample.crop!(x: 10, y: 20, width: 30, height: 40)
+      expect(sample.dimensions).to eq [30, 40]
+    end
+
+    it "defaults x and y to zero and width and height to the original width and height" do
+      sample.crop!
+      expect(sample.dimensions).to eq [200, 153]
+    end
+
+    it "raises if the requested area is not inside the original image" do
+      expect { sample.crop!(x: 10, y: 20, width: 195, height: 40) }.to raise_error(ArgumentError)
+      expect { sample.crop!(x: 10, y: 20, width: 95, height: 140) }.to raise_error(ArgumentError)
+      expect { sample.crop!(width: 95, height: 160) }.to raise_error(ArgumentError)
+    end
+  end
+
   describe "#save" do
     it "saves a JPEG" do
       begin

@@ -214,7 +214,7 @@ VALUE resize_exact_bang(VALUE self, VALUE width_value, VALUE height_value)
   width = FIX2INT(width_value);
   height = FIX2INT(height_value);
 
-  if (width < 0 || height < 0) {
+  if (width <= 0 || height <= 0) {
     rb_raise(rb_eArgError, "width and height must both be positive integers");
   }
 
@@ -235,6 +235,51 @@ VALUE resize_exact_bang(VALUE self, VALUE width_value, VALUE height_value)
   return self;
 }
 
+VALUE internal_crop_bang(VALUE self, VALUE x_value, VALUE y_value, VALUE width_value, VALUE height_value)
+{
+  gdImagePtr image_in, image_out;
+  int x, y, width, height;
+
+  Check_Type(x_value, T_FIXNUM);
+  Check_Type(y_value, T_FIXNUM);
+  Check_Type(width_value, T_FIXNUM);
+  Check_Type(height_value, T_FIXNUM);
+
+  x = FIX2INT(x_value);
+  y = FIX2INT(y_value);
+  width = FIX2INT(width_value);
+  height = FIX2INT(height_value);
+
+  if (x < 0 || y < 0) {
+    rb_raise(rb_eArgError, "x, y must both be zero or positive integers");
+  }
+
+  if (width <= 0 || height <= 0) {
+    rb_raise(rb_eArgError, "width and height must both be positive integers");
+  }
+
+  image_in = get_image_data(self);
+
+  if (x + width > gdImageSX(image_in)) {
+    rb_raise(rb_eArgError, "x + width is greater than the original image's width");
+  }
+
+  if (y + height > gdImageSY(image_in)) {
+    rb_raise(rb_eArgError, "y + height is greater than the original image's height");
+  }
+
+  image_out = gdImageCreateTrueColor(width, height);
+  set_alpha(image_out);
+
+  gdImageCopy(image_out, image_in, 0, 0, x, y, width, height);
+
+  set_image_data(self, image_out);
+
+  retrieve_image_dimensions(self);
+
+  return self;
+}
+
 void Init_tinyimg()
 {
   VALUE cTinyimg = rb_define_class("Tinyimg", rb_cObject);
@@ -246,6 +291,7 @@ void Init_tinyimg()
   rb_define_private_method(cTinyimg, "initialize_copy", initialize_copy, -1);
   rb_define_private_method(cTinyimg, "load_from_string", load_from_string, 2);
   rb_define_private_method(cTinyimg, "retrieve_image_dimensions", retrieve_image_dimensions, 0);
+  rb_define_private_method(cTinyimg, "internal_crop!", internal_crop_bang, 4);
 #ifdef HAVE_GDIMAGECREATEFROMFILE
   rb_define_private_method(cTinyimg, "load_from_file", load_from_file, 1);
 #endif

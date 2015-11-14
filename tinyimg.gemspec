@@ -1,8 +1,8 @@
 Gem::Specification.new do |gem|
   gem.name = 'tinyimg'
-  gem.version = '0.1.0'
-  gem.summary = "Tiny and fast JPEG/PNG resizer and converter"
-  gem.description = "Convert between JPEG/PNG and resize images, either all in memory or via disk.  Only required libgd to function."
+  gem.version = '0.1.1'
+  gem.summary = "Tiny and fast JPEG/PNG cropping and resizing"
+  gem.description = "Convert between JPEG/PNG, crop and resize images, either all in memory or via disk.  Only requires libgd to function."
   gem.has_rdoc = false
   gem.author = "Roger Nesbitt"
   gem.email = "roger@seriousorange.com"
