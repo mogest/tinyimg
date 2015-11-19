@@ -94,19 +94,19 @@ RSpec.describe Tinyimg do
     end
 
     it "raises if other keys are provided" do
-      expect { sample.resize!(something: 123) }.to raise_error(ArgumentError)
+      expect { sample.resize!(something: 123) }.to raise_error(Tinyimg::Error)
     end
 
     it "raises if non-integer values are provided" do
-      expect { sample.resize!(width: "123") }.to raise_error(ArgumentError)
+      expect { sample.resize!(width: "123") }.to raise_error(Tinyimg::Error)
     end
 
     it "raises if no keys are provided" do
-      expect { sample.resize! }.to raise_error(ArgumentError)
+      expect { sample.resize! }.to raise_error(Tinyimg::Error)
     end
 
     it "raises if only one argument is provided" do
-      expect { sample.resize!(123) }.to raise_error(ArgumentError)
+      expect { sample.resize!(123) }.to raise_error(Tinyimg::Error)
     end
   end
 
@@ -153,9 +153,9 @@ RSpec.describe Tinyimg do
     end
 
     it "raises if the requested area is not inside the original image" do
-      expect { sample.crop!(x: 10, y: 20, width: 195, height: 40) }.to raise_error(ArgumentError)
-      expect { sample.crop!(x: 10, y: 20, width: 95, height: 140) }.to raise_error(ArgumentError)
-      expect { sample.crop!(width: 95, height: 160) }.to raise_error(ArgumentError)
+      expect { sample.crop!(x: 10, y: 20, width: 195, height: 40) }.to raise_error(Tinyimg::Error)
+      expect { sample.crop!(x: 10, y: 20, width: 95, height: 140) }.to raise_error(Tinyimg::Error)
+      expect { sample.crop!(width: 95, height: 160) }.to raise_error(Tinyimg::Error)
     end
   end
 

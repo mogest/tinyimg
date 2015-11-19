@@ -1,6 +1,11 @@
 #include <ruby.h>
 #include <gd.h>
 
+VALUE get_error_class(VALUE self)
+{
+  return rb_const_get_at(rb_class_of(self), rb_intern("Error"));
+}
+
 gdImagePtr get_image_data(VALUE self)
 {
   gdImagePtr image;
@@ -52,11 +57,11 @@ VALUE load_from_string(VALUE self, VALUE input, VALUE type)
     image = gdImageCreateFromJpegPtr(RSTRING_LEN(input), RSTRING_PTR(input));
   }
   else {
-    rb_raise(rb_eArgError, "type must be a supported image type");
+    rb_raise(get_error_class(self), "type must be a supported image type");
   }
 
   if (!image) {
-    rb_raise(rb_eRuntimeError, "Error loading image data");
+    rb_raise(get_error_class(self), "Error loading image data");
   }
 
   set_image_data(self, image);
@@ -76,7 +81,7 @@ VALUE load_from_file(VALUE self, VALUE filename)
 
   image = gdImageCreateFromFile(StringValueCStr(filename));
   if (!image) {
-    rb_raise(rb_eRuntimeError, "Error loading image data");
+    rb_raise(get_error_class(self), "Error loading image data");
   }
 
   set_image_data(self, image);
@@ -124,7 +129,7 @@ VALUE save_to_file(VALUE self, VALUE filename)
   result = gdImageFile(image, StringValueCStr(filename));
 
   if (result == GD_FALSE) {
-    rb_raise(rb_eRuntimeError, "Unknown error occurred while trying to save the file; check it is using a known filename");
+    rb_raise(get_error_class(self), "Unknown error occurred while trying to save the file; check it is using a known filename");
   }
 
   return self;
@@ -149,14 +154,14 @@ VALUE to_jpeg(int argc, VALUE *argv, VALUE self)
   }
 
   if (quality < -1 || quality > 100) {
-    rb_raise(rb_eArgError, "Quality must be between 0 and 100, or -1 for default");
+    rb_raise(get_error_class(self), "Quality must be between 0 and 100, or -1 for default");
   }
 
   image = get_image_data(self);
 
   image_data = (char *) gdImageJpegPtr(image, &size, quality);
   if (!image_data) {
-    rb_raise(rb_eRuntimeError, "Unknown error occurred while trying to build a JPEG");
+    rb_raise(get_error_class(self), "Unknown error occurred while trying to build a JPEG");
   }
 
   VALUE output = rb_str_new(image_data, size);
@@ -184,7 +189,7 @@ VALUE to_png(int argc, VALUE *argv, VALUE self)
     compression = FIX2INT(compression_value);
 
     if (compression < 0 || compression > 9) {
-      rb_raise(rb_eArgError, "Compression must be between 0 and 9");
+      rb_raise(get_error_class(self), "Compression must be between 0 and 9");
     }
 
 #ifdef HAVE_GDIMAGEPNGPTREX
@@ -195,7 +200,7 @@ VALUE to_png(int argc, VALUE *argv, VALUE self)
   }
 
   if (!image_data) {
-    rb_raise(rb_eRuntimeError, "Unknown error occurred while trying to build a PNG");
+    rb_raise(get_error_class(self), "Unknown error occurred while trying to build a PNG");
   }
 
   VALUE output = rb_str_new(image_data, size);
@@ -215,7 +220,7 @@ VALUE resize_exact_bang(VALUE self, VALUE width_value, VALUE height_value)
   height = FIX2INT(height_value);
 
   if (width <= 0 || height <= 0) {
-    rb_raise(rb_eArgError, "width and height must both be positive integers");
+    rb_raise(get_error_class(self), "width and height must both be positive integers");
   }
 
   image_in = get_image_data(self);
@@ -251,21 +256,21 @@ VALUE internal_crop_bang(VALUE self, VALUE x_value, VALUE y_value, VALUE width_v
   height = FIX2INT(height_value);
 
   if (x < 0 || y < 0) {
-    rb_raise(rb_eArgError, "x, y must both be zero or positive integers");
+    rb_raise(get_error_class(self), "x, y must both be zero or positive integers");
   }
 
   if (width <= 0 || height <= 0) {
-    rb_raise(rb_eArgError, "width and height must both be positive integers");
+    rb_raise(get_error_class(self), "width and height must both be positive integers");
   }
 
   image_in = get_image_data(self);
 
   if (x + width > gdImageSX(image_in)) {
-    rb_raise(rb_eArgError, "x + width is greater than the original image's width");
+    rb_raise(get_error_class(self), "x + width is greater than the original image's width");
   }
 
   if (y + height > gdImageSY(image_in)) {
-    rb_raise(rb_eArgError, "y + height is greater than the original image's height");
+    rb_raise(get_error_class(self), "y + height is greater than the original image's height");
   }
 
   image_out = gdImageCreateTrueColor(width, height);
@@ -284,6 +289,7 @@ void Init_tinyimg()
 {
   VALUE cTinyimg = rb_define_class("Tinyimg", rb_cObject);
   rb_define_class_under(cTinyimg, "Image", rb_cObject);
+  rb_define_class_under(cTinyimg, "Error", rb_const_get(rb_cObject, rb_intern("StandardError")));
 
   rb_define_method(cTinyimg, "resize_exact!", resize_exact_bang, 2);
   rb_define_method(cTinyimg, "to_jpeg", to_jpeg, -1);

@@ -33,7 +33,7 @@ class Tinyimg
       width, height = convert_hash_to_exact_dimensions(args.first)
       resize_exact!(width, height)
     else
-      raise ArgumentError, "#resize and #resize! accept either (width, height) or a hash with :width and/or :height keys"
+      raise Error, "#resize and #resize! accept either (width, height) or a hash with :width and/or :height keys"
     end
   end
 
@@ -138,7 +138,7 @@ class Tinyimg
     elsif data[0, 8].unpack("C*") == [137, 80, 78, 71, 13, 10, 26, 10]
       :png
     else
-      raise ArgumentError, "Only JPEG and PNG files are supported"
+      raise Error, "Only JPEG and PNG files are supported"
     end
   end
 
@@ -147,17 +147,17 @@ class Tinyimg
     when 'jpeg', 'jpg' then :jpeg
     when 'png'         then :png
     else
-      raise ArgumentError, "Cannot determine image type based on the filename"
+      raise Error, "Cannot determine image type based on the filename"
     end
   end
 
   def convert_hash_to_exact_dimensions(opts)
     if opts.empty? || !(opts.keys - [:width, :height]).empty?
-      raise ArgumentError, "expected either :width or :height or both keys"
+      raise Error, "expected either :width or :height or both keys"
     end
 
     if opts.values.any? { |v| !v.is_a?(Fixnum) }
-      raise ArgumentError, ":width and :height values must be integers"
+      raise Error, ":width and :height values must be integers"
     end
 
     new_width, new_height = opts[:width], opts[:height]

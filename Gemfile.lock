@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tinyimg (0.1.0)
+    tinyimg (0.1.1)
 
 GEM
   remote: http://rubygems.org/
@@ -27,3 +27,6 @@ PLATFORMS
 DEPENDENCIES
   rspec (~> 3.0)
   tinyimg!
+
+BUNDLED WITH
+   1.10.6
