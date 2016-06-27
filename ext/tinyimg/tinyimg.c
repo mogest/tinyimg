@@ -240,6 +240,40 @@ VALUE resize_exact_bang(VALUE self, VALUE width_value, VALUE height_value)
   return self;
 }
 
+VALUE fill_transparent_color_bang(VALUE self, VALUE red_value, VALUE green_value, VALUE blue_value)
+{
+  gdImagePtr image_in, image_out;
+  int red, green, blue;
+  int color;
+
+  Check_Type(red_value, T_FIXNUM);
+  Check_Type(green_value, T_FIXNUM);
+  Check_Type(blue_value, T_FIXNUM);
+
+  red = FIX2INT(red_value);
+  green = FIX2INT(green_value);
+  blue = FIX2INT(blue_value);
+
+  if (red < 0 || green < 0 || blue < 0 || red > 255 || green > 255 || blue > 255) {
+    rb_raise(get_error_class(self), "red, green and blue must be integers between 0 and 255");
+  }
+
+  image_in = get_image_data(self);
+  image_out = gdImageCreateTrueColor(gdImageSX(image_in), gdImageSY(image_in));
+
+  color = gdImageColorAllocate(image_out, red, green, blue);
+  gdImageFilledRectangle(image_out, 0, 0, gdImageSX(image_in), gdImageSY(image_in), color);
+
+  gdImageCopy(
+      image_out, image_in, 0, 0, 0, 0,
+      gdImageSX(image_in), gdImageSY(image_in)
+  );
+
+  set_image_data(self, image_out);
+
+  return self;
+}
+
 VALUE internal_crop_bang(VALUE self, VALUE x_value, VALUE y_value, VALUE width_value, VALUE height_value)
 {
   gdImagePtr image_in, image_out;
@@ -292,6 +326,7 @@ void Init_tinyimg()
   rb_define_class_under(cTinyimg, "Error", rb_const_get(rb_cObject, rb_intern("StandardError")));
 
   rb_define_method(cTinyimg, "resize_exact!", resize_exact_bang, 2);
+  rb_define_method(cTinyimg, "fill_transparent_color!", fill_transparent_color_bang, 3);
   rb_define_method(cTinyimg, "to_jpeg", to_jpeg, -1);
   rb_define_method(cTinyimg, "to_png", to_png, -1);
   rb_define_private_method(cTinyimg, "initialize_copy", initialize_copy, -1);

@@ -159,6 +159,20 @@ RSpec.describe Tinyimg do
     end
   end
 
+  describe "#fill_transparent_color" do
+    it "returns an image of the same size without crashing (we can't test this easily)" do
+      result = sample.fill_transparent_color(255, 0, 0)
+      expect(result.dimensions).to eq [200, 153]
+    end
+  end
+
+  describe "#fill_transparent_color!" do
+    it "returns an image of the same size without crashing (we can't test this easily)" do
+      sample.fill_transparent_color!(255, 0, 0)
+      expect(sample.dimensions).to eq [200, 153]
+    end
+  end
+
   describe "#save" do
     it "saves a JPEG" do
       begin

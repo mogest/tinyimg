@@ -76,6 +76,14 @@ class Tinyimg
     internal_crop!(x, y, width, height)
   end
 
+  # Implemented in C
+  # def fill_transparent_color!(red, green, blue)
+  # end
+
+  def fill_transparent_color(red, green, blue)
+    dup.fill_transparent_color!(red, green, blue)
+  end
+
   def save(filename)
     if respond_to?(:save_to_file)
       save_to_file(filename)

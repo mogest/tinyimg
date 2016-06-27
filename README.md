@@ -55,6 +55,14 @@ image.crop!(x: 20, y: 20, width: 50, height: 50)
 image.crop!(width: image.height)
 ```
 
+Set the transparent color of your PNG image if you're about to save it to a JPEG, as JPEG doesn't support
+transparency:
+
+```ruby
+# Make the transparent color red
+image.fill_transparent_color!(255, 0, 0)
+```
+
 Then get an image back:
 
 ```ruby
@@ -71,17 +79,18 @@ image.height      # => 80
 image.dimensions  # => [120, 80]
 ```
 
-You can also use the non-! versions of the operation methods: `resize_exact`, `resize`, `resize_to_fit`, `resize_to_fill` and `crop`.
-These create a new image in memory and return it, leaving the old image untouched.  This is useful if you want
+You can also use the non-! versions of the operation methods: `resize_exact`, `resize`, `resize_to_fit`, `resize_to_fill`, `crop`
+and `fill_transparent_color`.  These create a new image in memory and return it, leaving the old image untouched.  This is useful if you want
 to resize an original image to multiple sizes.  Using these methods will take more memory.
 
 ## Examples
 
-Take an uploaded file that's a PNG or JPEG, save the original as a JPEG, then resize to create a thumbnail and save that too:
+Take an uploaded file that's a PNG or JPEG, make the transparent color white, save the original as a JPEG, then resize to create a thumbnail and save that too:
 
 ```ruby
 Tinyimg
   .from_io(params[:uploaded_file])
+  .fill_transparent_color!(255, 255, 255)
   .save("#{path}/full_size.jpg")
   .resize_to_fit!(100, 100)
   .save("#{path}/thumbnail.jpg")
@@ -96,4 +105,4 @@ user.update!(thumbnail_image: data)
 
 ## Author and licence
 
-Copyright 2015 Roger Nesbitt.  Licenced under the MIT licence.
+Copyright 2015-2016 Roger Nesbitt.  Licenced under the MIT licence.
