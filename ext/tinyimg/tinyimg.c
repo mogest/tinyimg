@@ -45,16 +45,22 @@ VALUE load_from_string(VALUE self, VALUE input, VALUE type)
 {
   gdImagePtr image;
   ID type_id;
+  long input_length;
 
   Check_Type(input, T_STRING);
   Check_Type(type, T_SYMBOL);
   type_id = SYM2ID(type);
 
+  input_length = RSTRING_LEN(input);
+  if (input_length >= 1L << 31) {
+    rb_raise(get_error_class(self), "input must be less than 2GB in length");
+  }
+
   if (type_id == rb_intern("png")) {
-    image = gdImageCreateFromPngPtr(RSTRING_LEN(input), RSTRING_PTR(input));
+    image = gdImageCreateFromPngPtr((int)input_length, RSTRING_PTR(input));
   }
   else if (type_id == rb_intern("jpeg")) {
-    image = gdImageCreateFromJpegPtr(RSTRING_LEN(input), RSTRING_PTR(input));
+    image = gdImageCreateFromJpegPtr((int)input_length, RSTRING_PTR(input));
   }
   else {
     rb_raise(get_error_class(self), "type must be a supported image type");

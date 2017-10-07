@@ -27,7 +27,7 @@ class Tinyimg
 
   def resize!(*args)
     case args.map(&:class)
-    when [Fixnum, Fixnum]
+    when [Integer, Integer]
       resize_exact!(*args)
     when [Hash]
       width, height = convert_hash_to_exact_dimensions(args.first)
@@ -164,7 +164,7 @@ class Tinyimg
       raise Error, "expected either :width or :height or both keys"
     end
 
-    if opts.values.any? { |v| !v.is_a?(Fixnum) }
+    if opts.values.any? { |v| !v.is_a?(Integer) }
       raise Error, ":width and :height values must be integers"
     end
 
