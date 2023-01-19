@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name = 'tinyimg'
-  gem.version = '0.1.5'
+  gem.version = '0.1.6'
   gem.summary = "Tiny and fast JPEG/PNG cropping and resizing"
   gem.description = "Convert between JPEG/PNG, crop and resize images, either all in memory or via disk.  Only requires libgd to function."
   gem.author = "Mog Nesbitt"
@@ -16,4 +16,5 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 2.0.0'
 
   gem.add_development_dependency "rspec", "~> 3.0"
+  gem.add_development_dependency "rake-compiler", "~> 1.2.1"
 end

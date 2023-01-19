@@ -1,4 +1,4 @@
-require_relative '../ext/tinyimg/tinyimg'
+require 'tinyimg/tinyimg'
 
 class Tinyimg
   attr_reader :width, :height

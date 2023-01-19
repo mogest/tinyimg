@@ -1,6 +1,4 @@
 Gemfile.lock
 /*.gem
-ext/tinyimg/Makefile
-ext/tinyimg/mkmf.log
-ext/tinyimg/*.bundle
-ext/tinyimg/*.o
+/tmp
+/lib/tinyimg/
