@@ -328,7 +328,10 @@ VALUE internal_crop_bang(VALUE self, VALUE x_value, VALUE y_value, VALUE width_v
 void Init_tinyimg()
 {
   VALUE cTinyimg = rb_define_class("Tinyimg", rb_cObject);
-  rb_define_class_under(cTinyimg, "Image", rb_cObject);
+
+  VALUE cTinyimgImage = rb_define_class_under(cTinyimg, "Image", rb_cObject);
+  rb_undef_alloc_func(cTinyimgImage);
+
   rb_define_class_under(cTinyimg, "Error", rb_const_get(rb_cObject, rb_intern("StandardError")));
 
   rb_define_method(cTinyimg, "resize_exact!", resize_exact_bang, 2);

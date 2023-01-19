@@ -1,7 +1,7 @@
 require 'mkmf'
 
 def filter_dirs(dirs)
-  dirs.select {|dir| Dir.exists?(dir)}
+  dirs.select {|dir| Dir.exist?(dir)}
 end
 
 def cannot_find_gd
@@ -18,8 +18,8 @@ def cannot_find_gd
   TEXT
 end
 
-header_dirs = %w(/opt/local/include /usr/local/include /usr/include)
-lib_dirs    = %w(/opt/local/lib /usr/local/lib /usr/lib)
+header_dirs = %w(/opt/local/include /usr/local/include /usr/include /opt/homebrew/include)
+lib_dirs    = %w(/opt/local/lib /usr/local/lib /usr/lib /opt/homebrew/lib)
 
 dir_config('gd', filter_dirs(header_dirs), filter_dirs(lib_dirs))
 

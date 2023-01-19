@@ -1,3 +1,4 @@
+Gemfile.lock
 /*.gem
 ext/tinyimg/Makefile
 ext/tinyimg/mkmf.log
